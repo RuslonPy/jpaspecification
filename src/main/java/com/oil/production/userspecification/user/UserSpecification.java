@@ -53,7 +53,7 @@ public class UserSpecification {
     private static Specification<User> roleContains(Role role) {
         return ((root, query, criteriaBuilder) -> {
             Join<User, Role> join = root.join("role");
-            return criteriaBuilder.equal(join.get("id"), role.getId());
+            return criteriaBuilder.equal(join.get("id"), role.getName());
         });
     }
 
@@ -61,8 +61,8 @@ public class UserSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.and(
                 criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), contains(address.getAddress().toLowerCase())),
-                        criteriaBuilder.equal(root.get("region"), address.getDistrict()),
-                        criteriaBuilder.equal(root.get("district"), address.getDistrict().getRegion())
+                        criteriaBuilder.equal(root.get("district"), contains(address.getDistrict().toString())),
+                        criteriaBuilder.equal(root.get("region"), contains(address.getDistrict().getRegion().toString()))
                 )
         );
     }
