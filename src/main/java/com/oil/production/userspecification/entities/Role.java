@@ -1,5 +1,6 @@
 package com.oil.production.userspecification.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,15 +21,12 @@ public class Role {
     private Long id;
 
     @ElementCollection
-    @MapKeyColumn(name="language")
-    @Column(name="name")
-    @CollectionTable(name = "role_name_mapping",
-            joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Map<String, String> name;
 
     @Column(name = "role_order")
     private Integer roleOrder;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 

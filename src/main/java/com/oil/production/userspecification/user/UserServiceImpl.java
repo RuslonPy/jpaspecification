@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Department not found with id: " + userDto.getDepartment().getId()));
         user.setDepartment(department);
 
-        Set<Role> roles = userDto.getName().stream()
+        Set<Role> roles = userDto.getRoles().stream()
                 .map(role -> roleRepository.findById(role.getId())
                         .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + role.getId())))
                 .collect(Collectors.toSet());

@@ -28,7 +28,7 @@ public class UserDto {
 
     private Department department;
 
-    private Set<Role> name;
+    private Set<Role> roles;
 
     private Address address;
 

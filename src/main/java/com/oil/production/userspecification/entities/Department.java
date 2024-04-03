@@ -1,5 +1,6 @@
 package com.oil.production.userspecification.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,19 +24,16 @@ public class Department {
     private Long id;
 
     @ElementCollection
-    @MapKeyColumn(name="language")
-    @Column(name="name")
-    @CollectionTable(name = "department_name_mapping",
-            joinColumns = {@JoinColumn(name = "department_id", referencedColumnName = "id")})
     private Map<String, String> name;
 
     @Column(name = "department_order")
     private Integer depOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent_department_id")
     private Department parentDepartment;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> users = new HashSet<>();
 

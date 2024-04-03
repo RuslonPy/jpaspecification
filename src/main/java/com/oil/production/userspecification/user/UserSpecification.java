@@ -28,19 +28,19 @@ public class UserSpecification {
     }
 
     public static Specification<User> firstNameContains(String name){
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), contains(name)));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("firstName"), contains(name)));
     }
 
     public static Specification<User> lastNameContains(String lastName) {
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), contains(lastName)));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("lastName"), contains(lastName)));
     }
 
     public static Specification<User> middleNameContains(String middleName) {
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), contains(middleName)));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("middleName"), contains(middleName)));
     }
 
     public static Specification<User> usernameContains(String username) {
-        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), contains(username)));
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("username"), contains(username)));
     }
 
     private static Specification<User> departmentContains(Department department) {
@@ -53,7 +53,7 @@ public class UserSpecification {
     private static Specification<User> roleContains(Role role) {
         return ((root, query, criteriaBuilder) -> {
             Join<User, Role> join = root.join("role");
-            return criteriaBuilder.equal(join.get("id"), role.getName());
+            return criteriaBuilder.equal(join.get("id"), role.getId());
         });
     }
 
@@ -61,8 +61,8 @@ public class UserSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.and(
                 criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), contains(address.getAddress().toLowerCase())),
-                        criteriaBuilder.equal(root.get("district"), contains(address.getDistrict().toString())),
-                        criteriaBuilder.equal(root.get("region"), contains(address.getDistrict().getRegion().toString()))
+                        criteriaBuilder.equal(root.get("region"), address.getDistrict()),
+                        criteriaBuilder.equal(root.get("district"), address.getDistrict().getRegion())
                 )
         );
     }

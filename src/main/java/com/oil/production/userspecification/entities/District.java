@@ -1,5 +1,6 @@
 package com.oil.production.userspecification.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,6 @@ public class District {
     private Long id;
 
     @ElementCollection
-    @MapKeyColumn(name="language")
-    @Column(name="name")
-    @CollectionTable(name = "district_name_mapping",
-            joinColumns = {@JoinColumn(name = "district_id", referencedColumnName = "id")})
     private Map<String, String> name;
 
     @Column(name = "district_order")
@@ -34,6 +31,7 @@ public class District {
     @JoinColumn(name = "region_id")
     private Region region;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "district", fetch = FetchType.EAGER)
     private Set<Address> addresses = new HashSet<>();
 
