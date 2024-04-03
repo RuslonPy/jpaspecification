@@ -19,27 +19,31 @@ public class UserSpecification {
                 .and(searchCriteria.getMiddleName() == null ? null : middleNameContains(searchCriteria.getMiddleName()))
                 .and(searchCriteria.getUsername() == null ? null : usernameContains(searchCriteria.getUsername()))
                 .and(searchCriteria.getDepartment() == null ? null : departmentContains(searchCriteria.getDepartment()))
-                .and(searchCriteria.getRole() == null ? null : roleContains(searchCriteria.getRole()))
-                .and(searchCriteria.getAddress() == null ? null : addressEquals(searchCriteria.getAddress()));
+                .and(searchCriteria.getRoleNameUz() == null ? null : roleNameUzContains(searchCriteria.getRoleNameUz()))
+                .and(searchCriteria.getRoleNameEn() == null ? null : roleNameEnContains(searchCriteria.getRoleNameEn()))
+                .and(searchCriteria.getRoleNameRu() == null ? null : roleNameRuContains(searchCriteria.getRoleNameRu()))
+                .and(searchCriteria.getAddress() == null ? null : addressContains(searchCriteria.getAddress()))
+                .and(searchCriteria.getDistrictId() == null ? null : districtIdEquals(searchCriteria.getDistrictId()))
+                .and(searchCriteria.getRegionId() == null ? null : regionIdEquals(searchCriteria.getRegionId()));
     }
 
-    public static Specification<User> userStateIsActive() {
+    private static Specification<User> userStateIsActive() {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("userState"), User.State.ACTIVE));
     }
 
-    public static Specification<User> firstNameContains(String name){
+    private static Specification<User> firstNameContains(String name){
         return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("firstName"), contains(name)));
     }
 
-    public static Specification<User> lastNameContains(String lastName) {
+    private static Specification<User> lastNameContains(String lastName) {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("lastName"), contains(lastName)));
     }
 
-    public static Specification<User> middleNameContains(String middleName) {
+    private static Specification<User> middleNameContains(String middleName) {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("middleName"), contains(middleName)));
     }
 
-    public static Specification<User> usernameContains(String username) {
+    private static Specification<User> usernameContains(String username) {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("username"), contains(username)));
     }
 
@@ -50,21 +54,46 @@ public class UserSpecification {
         });
     }
 
-    private static Specification<User> roleContains(Role role) {
+    private static Specification<User> roleNameUzContains(String roleNameUz) {
         return ((root, query, criteriaBuilder) -> {
-            Join<User, Role> join = root.join("role");
-            return criteriaBuilder.equal(join.get("id"), role.getId());
+            Join<User, Role> join = root.join("roles");
+            return criteriaBuilder.equal(criteriaBuilder.lower(join.get("nameUz")), roleNameUz.toLowerCase());
         });
     }
 
-    private static Specification<User> addressEquals(Address address) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
-                criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), contains(address.getAddress().toLowerCase())),
-                        criteriaBuilder.equal(root.get("region"), address.getDistrict()),
-                        criteriaBuilder.equal(root.get("district"), address.getDistrict().getRegion())
-                )
-        );
+    private static Specification<User> roleNameEnContains(String roleNameEn) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<User, Role> join = root.join("roles");
+            return criteriaBuilder.equal(criteriaBuilder.lower(join.get("nameEn")), roleNameEn.toLowerCase());
+        });
+    }
+
+    private static Specification<User> roleNameRuContains(String roleNameRu) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<User, Role> join = root.join("roles");
+            return criteriaBuilder.equal(criteriaBuilder.lower(join.get("nameRu")), roleNameRu.toLowerCase());
+        });
+    }
+
+    private static Specification<User> addressContains(String address) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<User, Role> join = root.join("address");
+            return criteriaBuilder.like(criteriaBuilder.lower(join.get("address")), contains(address.toLowerCase()));
+        });
+    }
+
+    private static Specification<User> districtIdEquals(Long districtId) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<User, Address> join = root.join("address");
+            return criteriaBuilder.equal(join.get("district").get("id"), districtId);
+        });
+    }
+
+    private static Specification<User> regionIdEquals(Long regionId) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<User, Address> join = root.join("address");
+            return criteriaBuilder.equal(join.get("district").get("region").get("id"), regionId);
+        });
     }
 
     private static String contains(String expression) {
