@@ -15,7 +15,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @Table(name = "department")
 public class Department {
 
@@ -23,8 +22,9 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    private Map<String, String> name;
+    private String nameUz;
+    private String nameEn;
+    private String nameRu;
 
     @Column(name = "department_order")
     private Integer depOrder;
@@ -35,17 +35,6 @@ public class Department {
 
     @JsonIgnore
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<User> users = new HashSet<>();
-
-    public Department() {
-        this.name = new HashMap<>();
-    }
-
-    public void setName(String language, String name) {
-        this.name.put(language, name);
-    }
-    public String getName(String language) {
-        return this.name.get(language);
-    }
+    private Set<User> users;
 
 }

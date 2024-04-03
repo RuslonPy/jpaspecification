@@ -13,15 +13,15 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    private Map<String, String> name;
+    private String nameUz;
+    private String nameEn;
+    private String nameRu;
 
     @Column(name = "role_order")
     private Integer roleOrder;
@@ -29,16 +29,4 @@ public class Role {
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
-
-    public Role() {
-        this.name = new HashMap<>();
-    }
-
-    public void setName(String language, String name) {
-        this.name.put(language, name);
-    }
-
-    public String getName(String language) {
-        return this.name.get(language);
-    }
 }
