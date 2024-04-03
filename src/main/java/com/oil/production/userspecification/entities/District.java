@@ -14,15 +14,15 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 public class District {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    private Map<String, String> name;
+    private String nameUz;
+    private String nameEn;
+    private String nameRu;
 
     @Column(name = "district_order")
     private Integer disOrder;
@@ -33,18 +33,6 @@ public class District {
 
     @JsonIgnore
     @OneToMany(mappedBy = "district", fetch = FetchType.EAGER)
-    private Set<Address> addresses = new HashSet<>();
-
-    public District() {
-        this.name = new HashMap<>();
-    }
-
-    public void setName(String language, String name) {
-        this.name.put(language, name);
-    }
-
-    public String getName(String language) {
-        return this.name.get(language);
-    }
+    private Set<Address> addresses;
 
 }

@@ -14,30 +14,18 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 public class Region {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    private Map<String, String> name;
+    private String nameUz;
+    private String nameEn;
+    private String nameRu;
 
     @JsonIgnore
     @OneToMany(mappedBy = "region")
     private Set<District> districts = new HashSet<>();
-
-    public Region() {
-        this.name = new HashMap<>();
-    }
-
-    public void setName(String language, String name) {
-        this.name.put(language, name);
-    }
-
-    public String getName(String language) {
-        return this.name.get(language);
-    }
 
 }

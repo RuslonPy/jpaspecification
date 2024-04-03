@@ -77,18 +77,18 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
 
-        Department department = departmentRepository.findById(userDto.getDepartment().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Department not found with id: " + userDto.getDepartment().getId()));
+        Department department = departmentRepository.findById(userDto.getDepartmentDto().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Department not found with id: " + userDto.getDepartmentDto().getId()));
         user.setDepartment(department);
 
-        Set<Role> roles = userDto.getRoles().stream()
+        Set<Role> roles = userDto.getRoleDtos().stream()
                 .map(role -> roleRepository.findById(role.getId())
                         .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + role.getId())))
                 .collect(Collectors.toSet());
         user.setRoles(roles);
 
-        Address address = addressRepository.findById(userDto.getAddress().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + userDto.getAddress().getId()));
+        Address address = addressRepository.findById(userDto.getAddressDto().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + userDto.getAddressDto().getId()));
         user.setAddress(address);
 
         return user;
