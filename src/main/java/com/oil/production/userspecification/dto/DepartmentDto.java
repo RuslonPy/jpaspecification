@@ -11,9 +11,7 @@ public class DepartmentDto {
     private String nameUz;
     private String nameEn;
     private String nameRu;
-
     private Integer depOrder;
-
     private DepartmentDto parentDepartment;
 
 }

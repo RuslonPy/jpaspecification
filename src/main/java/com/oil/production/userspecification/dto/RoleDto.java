@@ -11,7 +11,6 @@ public class RoleDto {
     private String nameUz;
     private String nameEn;
     private String nameRu;
-
     private Integer roleOrder;
 
 }

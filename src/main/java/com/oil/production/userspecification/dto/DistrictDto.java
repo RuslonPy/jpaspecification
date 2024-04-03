@@ -11,9 +11,7 @@ public class DistrictDto {
     private String nameUz;
     private String nameEn;
     private String nameRu;
-
     private Integer disOrder;
-
     private RegionDto regionDto;
 
 }
