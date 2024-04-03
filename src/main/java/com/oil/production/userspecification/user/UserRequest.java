@@ -24,5 +24,5 @@ public class UserRequest {
     private Long regionId;
     private Long districtId;
 
-    private Department department;
+    private Long departmentId;
 }

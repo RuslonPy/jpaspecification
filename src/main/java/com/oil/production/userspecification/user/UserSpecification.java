@@ -5,6 +5,8 @@ import com.oil.production.userspecification.entities.Department;
 import com.oil.production.userspecification.entities.Role;
 import com.oil.production.userspecification.entities.User;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.text.MessageFormat;
@@ -18,7 +20,7 @@ public class UserSpecification {
                 .and(searchCriteria.getLastName() == null ? null : lastNameContains(searchCriteria.getLastName()))
                 .and(searchCriteria.getMiddleName() == null ? null : middleNameContains(searchCriteria.getMiddleName()))
                 .and(searchCriteria.getUsername() == null ? null : usernameContains(searchCriteria.getUsername()))
-                .and(searchCriteria.getDepartment() == null ? null : departmentContains(searchCriteria.getDepartment()))
+                .and(searchCriteria.getDepartmentId() == null ? null : departmentIdEquals(searchCriteria.getDepartmentId()))
                 .and(searchCriteria.getRoleNameUz() == null ? null : roleNameUzContains(searchCriteria.getRoleNameUz()))
                 .and(searchCriteria.getRoleNameEn() == null ? null : roleNameEnContains(searchCriteria.getRoleNameEn()))
                 .and(searchCriteria.getRoleNameRu() == null ? null : roleNameRuContains(searchCriteria.getRoleNameRu()))
@@ -47,10 +49,17 @@ public class UserSpecification {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("username"), contains(username)));
     }
 
-    private static Specification<User> departmentContains(Department department) {
+    private static Specification<User> departmentIdEquals(Long departmentId) {
         return ((root, query, criteriaBuilder) -> {
             Join<User, Department> join = root.join("department");
-            return criteriaBuilder.equal(join.get("id"), department.getId());
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Department> departmentRoot = subquery.from(Department.class);
+            subquery.select(departmentRoot.get("id"))
+                    .where(criteriaBuilder.or(
+                            criteriaBuilder.equal(departmentRoot.get("id"), departmentId),
+                            criteriaBuilder.equal(departmentRoot.get("parentDepartment").get("id"), departmentId)
+                    ));
+            return criteriaBuilder.in(join.get("id")).value(subquery);
         });
     }
 
